@@ -1,0 +1,441 @@
+/*
+ * src/styles/globals.css
+ *
+ * ─── Design System FinTrack — adaptado do repositório para Vite ──────────────
+ *
+ * Origem: app/globals.css do repositório Next.js anexado.
+ * Adaptações realizadas para funcionar com Vite + React sem Next.js:
+ *
+ *   1. @import 'tw-animate-css' removido → substituído por keyframes manuais
+ *      (não existe como pacote standalone; em Next.js vinha do node_modules)
+ *
+ *   2. @custom-variant dark (&:is(.dark *)) removido → não necessário, pois
+ *      usamos [data-theme="dark"] em vez de classe .dark
+ *
+ *   3. .dark { ... } → [data-theme="dark"] { ... }
+ *      O ThemeContext aplica data-theme="dark" no <html>.
+ *      A classe .dark é o mecanismo do next-themes, que não usamos.
+ *
+ *   4. @theme inline { ... } mantido exatamente como no original.
+ *      O `inline` garante que os tokens referenciam as variáveis CSS do :root
+ *      em vez de duplicá-las — a troca de tema escuro/claro funciona
+ *      automaticamente porque [data-theme="dark"] reatribui as variáveis base.
+ *
+ *   5. Fonte Inter via @import url() em vez de next/font/google.
+ *
+ *   6. Mantidos integralmente: tokens financeiros (--success, --destructive),
+ *      tokens de sidebar, gráficos, e as utilities .text-income, .text-expense,
+ *      .bg-income-subtle, .bg-expense-subtle.
+ *
+ *   7. Adicionados ao @layer base: as classes de animação que tw-animate-css
+ *      fornecia, reimplementadas como keyframes nativos.
+ *
+ *   8. Tokens do design system anterior (--color-accent-*, --color-bg-*, etc.)
+ *      mantidos no @theme para não quebrar os componentes já escritos.
+ */
+ 
+ /* ── Fonte ───────────────────────────────────────────────────────────────── */
+ /* Inter: mesma fonte do repositório original */
+ @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap");
+
+/* ── Tailwind v4 ─────────────────────────────────────────────────────────── */
+@import "tailwindcss";
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+/* TOKENS DO REPOSITÓRIO — tema claro (padrão)                               */
+/* ══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* Background & Foreground */
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.15 0 0);
+
+  /* Cards & Surfaces */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0 0);
+
+  /* Primary */
+  --primary: oklch(0.18 0 0);
+  --primary-foreground: oklch(0.99 0 0);
+
+  /* Secondary */
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0.18 0 0);
+
+  /* Muted */
+  --muted: oklch(0.96 0.005 250);
+  --muted-foreground: oklch(0.5 0 0);
+
+  /* Accent */
+  --accent: oklch(0.96 0.005 250);
+  --accent-foreground: oklch(0.18 0 0);
+
+  /* Semantic Colors - Financial */
+  --success: oklch(0.65 0.19 145);
+  --success-foreground: oklch(0.99 0 0);
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  /* Borders & Inputs */
+  --border: oklch(0.92 0 0);
+  --input: oklch(0.92 0 0);
+  --ring: oklch(0.18 0 0);
+
+  /* Charts - Financial themed */
+  --chart-1: oklch(0.65 0.19 145);
+  --chart-2: oklch(0.6 0.22 25);
+  --chart-3: oklch(0.6 0.15 250);
+  --chart-4: oklch(0.75 0.15 85);
+  --chart-5: oklch(0.55 0.2 300);
+
+  /* Radius */
+  --radius: 0.75rem;
+
+  /* Sidebar */
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.15 0 0);
+  --sidebar-primary: oklch(0.18 0 0);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.96 0 0);
+  --sidebar-accent-foreground: oklch(0.18 0 0);
+  --sidebar-border: oklch(0.92 0 0);
+  --sidebar-ring: oklch(0.18 0 0);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+/* TEMA ESCURO                                                                */
+/*                                                                           */
+/* ADAPTAÇÃO: o repositório original usa `.dark { }` (classe aplicada pelo  */
+/* next-themes no <html>). Aqui usamos [data-theme="dark"] porque o          */
+/* ThemeContext do Vite aplica o atributo data-theme no <html>.              */
+/*                                                                           */
+/* Comportamento idêntico ao original — apenas o seletor CSS é diferente.   */
+/* ══════════════════════════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+  /* Background & Foreground */
+  --background: oklch(0.12 0.005 250);
+  --foreground: oklch(0.96 0 0);
+
+  /* Cards & Surfaces */
+  --card: oklch(0.16 0.005 250);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.16 0.005 250);
+  --popover-foreground: oklch(0.96 0 0);
+
+  /* Primary */
+  --primary: oklch(0.96 0 0);
+  --primary-foreground: oklch(0.12 0 0);
+
+  /* Secondary */
+  --secondary: oklch(0.22 0.005 250);
+  --secondary-foreground: oklch(0.96 0 0);
+
+  /* Muted */
+  --muted: oklch(0.22 0.005 250);
+  --muted-foreground: oklch(0.65 0 0);
+
+  /* Accent */
+  --accent: oklch(0.22 0.005 250);
+  --accent-foreground: oklch(0.96 0 0);
+
+  /* Semantic Colors - Financial */
+  --success: oklch(0.7 0.19 145);
+  --success-foreground: oklch(0.15 0.05 145);
+  --destructive: oklch(0.65 0.22 25);
+  --destructive-foreground: oklch(0.15 0.05 25);
+
+  /* Borders & Inputs */
+  --border: oklch(0.26 0.005 250);
+  --input: oklch(0.26 0.005 250);
+  --ring: oklch(0.96 0 0);
+
+  /* Charts - Financial themed */
+  --chart-1: oklch(0.7 0.19 145);
+  --chart-2: oklch(0.65 0.22 25);
+  --chart-3: oklch(0.65 0.15 250);
+  --chart-4: oklch(0.8 0.15 85);
+  --chart-5: oklch(0.6 0.2 300);
+
+  /* Sidebar */
+  --sidebar: oklch(0.14 0.005 250);
+  --sidebar-foreground: oklch(0.96 0 0);
+  --sidebar-primary: oklch(0.96 0 0);
+  --sidebar-primary-foreground: oklch(0.12 0 0);
+  --sidebar-accent: oklch(0.22 0.005 250);
+  --sidebar-accent-foreground: oklch(0.96 0 0);
+  --sidebar-border: oklch(0.26 0.005 250);
+  --sidebar-ring: oklch(0.96 0 0);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+/* @theme inline — mapeia variáveis CSS em classes Tailwind                  */
+/*                                                                           */
+/* `inline` significa: não cria novas variáveis CSS, apenas gera as classes  */
+/* Tailwind referenciando as variáveis já existentes no :root acima.         */
+/* Quando [data-theme="dark"] reatribui --background, bg-background          */
+/* automaticamente passa a usar o valor escuro — sem nenhuma lógica extra.  */
+/* ══════════════════════════════════════════════════════════════════════════ */
+@theme inline {
+  /* Fonte — Inter como fonte principal (mesma do repositório) */
+  --font-sans: "Inter", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+
+  /* Cores do sistema shadcn/ui */
+  --color-background:         var(--background);
+  --color-foreground:         var(--foreground);
+  --color-card:               var(--card);
+  --color-card-foreground:    var(--card-foreground);
+  --color-popover:            var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary:            var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary:          var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:              var(--muted);
+  --color-muted-foreground:   var(--muted-foreground);
+  --color-accent:             var(--accent);
+  --color-accent-foreground:  var(--accent-foreground);
+  --color-success:            var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-destructive:        var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border:             var(--border);
+  --color-input:              var(--input);
+  --color-ring:               var(--ring);
+  --color-chart-1:            var(--chart-1);
+  --color-chart-2:            var(--chart-2);
+  --color-chart-3:            var(--chart-3);
+  --color-chart-4:            var(--chart-4);
+  --color-chart-5:            var(--chart-5);
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Sidebar */
+  --color-sidebar:                    var(--sidebar);
+  --color-sidebar-foreground:         var(--sidebar-foreground);
+  --color-sidebar-primary:            var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent:             var(--sidebar-accent);
+  --color-sidebar-accent-foreground:  var(--sidebar-accent-foreground);
+  --color-sidebar-border:             var(--sidebar-border);
+  --color-sidebar-ring:               var(--sidebar-ring);
+
+  /* ── Tokens do design system FinTrack (mantidos para compatibilidade) ─── */
+  /* Os componentes já escritos usam estas classes — não remover. */
+  --color-accent-blue:          #5A8FE8;
+  --color-accent-green:         #5AB88A;
+  --color-accent-red:           #E85A7A;
+  --color-accent-orange:        #E8845A;
+  --color-accent-purple:        #A85AE8;
+  --color-accent-yellow:        #E8C45A;
+  --color-accent-blue-muted:    color-mix(in srgb, #5A8FE8 18%, transparent);
+  --color-accent-green-muted:   color-mix(in srgb, #5AB88A 18%, transparent);
+  --color-accent-red-muted:     color-mix(in srgb, #E85A7A 18%, transparent);
+  --color-accent-orange-muted:  color-mix(in srgb, #E8845A 18%, transparent);
+  --color-accent-purple-muted:  color-mix(in srgb, #A85AE8 18%, transparent);
+  --color-accent-yellow-muted:  color-mix(in srgb, #E8C45A 18%, transparent);
+
+  /* Sombras */
+  --shadow-card:        0 2px 8px rgba(0, 0, 0, 0.32);
+  --shadow-modal:       0 8px 32px rgba(0, 0, 0, 0.52);
+  --shadow-glow-blue:   0 0 20px rgba(90, 143, 232, 0.25);
+  --shadow-glow-green:  0 0 20px rgba(90, 184, 138, 0.25);
+  --shadow-glow-red:    0 0 20px rgba(232, 90, 122, 0.25);
+  --shadow-glow-yellow: 0 0 20px rgba(232, 196, 90, 0.25);
+
+  /* Transições */
+  --duration-fast:   150ms;
+  --duration-normal: 250ms;
+  --duration-slow:   400ms;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+/* @layer base — reset e estilos globais                                     */
+/* ══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+  /* Copiado exatamente do repositório */
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Adicionais para o Vite (não existem em Next.js por padrão) */
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition:
+      background-color var(--duration-normal, 250ms) ease,
+      color var(--duration-normal, 250ms) ease;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground); }
+
+  /* Links */
+  a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  /* Inputs — complementa o reset do shadcn */
+  input, textarea, select {
+    font-family: var(--font-sans);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+/* @layer utilities — utilitários do repositório + do design system FinTrack */
+/* ══════════════════════════════════════════════════════════════════════════ */
+@layer utilities {
+
+  /* ── Utilitários financeiros (copiados do repositório) ─────────────────── */
+  .text-income {
+    color: var(--success);
+  }
+  .text-expense {
+    color: var(--destructive);
+  }
+  .bg-income {
+    background-color: var(--success);
+  }
+  .bg-expense {
+    background-color: var(--destructive);
+  }
+  .bg-income-subtle {
+    background-color: oklch(from var(--success) l c h / 0.1);
+  }
+  .bg-expense-subtle {
+    background-color: oklch(from var(--destructive) l c h / 0.1);
+  }
+
+  /* ── Utilitários do design system FinTrack (compatibilidade) ───────────── */
+  /* Mantidos para não quebrar os componentes já escritos com estas classes. */
+  .bg-base     { background-color: var(--background); }
+  .bg-surface  { background-color: var(--card); }
+  .bg-elevated { background-color: var(--secondary); }
+  .bg-hover    { background-color: var(--accent); }
+  .text-primary   { color: var(--foreground); }
+  .text-secondary { color: var(--muted-foreground); }
+  .text-muted     { color: var(--muted-foreground); }
+  .border-lo { border-color: var(--border); }
+  .border-md { border-color: var(--border); }
+  .border-hi { border-color: var(--ring); }
+
+  /* Sombras */
+  .shadow-card  { box-shadow: var(--shadow-card); }
+  .shadow-modal { box-shadow: var(--shadow-modal); }
+  .glow-blue    { box-shadow: var(--shadow-glow-blue); }
+  .glow-green   { box-shadow: var(--shadow-glow-green); }
+  .glow-red     { box-shadow: var(--shadow-glow-red); }
+  .glow-yellow  { box-shadow: var(--shadow-glow-yellow); }
+
+  /* Card — agora usa os tokens do shadcn */
+  .card {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card, 0 2px 8px rgba(0,0,0,0.08));
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  /* Skeleton — usa tokens do repositório */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--secondary) 25%,
+      var(--accent)    50%,
+      var(--secondary) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: calc(var(--radius) - 4px);
+  }
+
+  /* Spinner */
+  .spinner {
+    border-radius: 9999px;
+    border-style: solid;
+    border-color: var(--border);
+    border-top-color: var(--primary);
+    animation: spin 0.7s linear infinite;
+  }
+
+  /* Animações de entrada — substituto do tw-animate-css */
+  .animate-fade-in        { animation: fadeIn 0.25s ease forwards; }
+  .animate-fade-in-scale  { animation: fadeInScale 0.2s ease forwards; }
+  .animate-slide-up       { animation: slideUp 0.3s ease forwards; }
+  .animate-slide-down     { animation: slideDown 0.25s ease forwards; }
+  .animate-accordion-down { animation: accordionDown 0.2s ease-out; }
+  .animate-accordion-up   { animation: accordionUp 0.2s ease-out; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+/* Keyframes — substitui tw-animate-css                                       */
+/* ══════════════════════════════════════════════════════════════════════════ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position:  200% 0; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+/* Accordion — usado pelos componentes shadcn/ui */
+@keyframes accordionDown {
+  from { height: 0; }
+  to   { height: var(--radix-accordion-content-height); }
+}
+@keyframes accordionUp {
+  from { height: var(--radix-accordion-content-height); }
+  to   { height: 0; }
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+  <!--
+    data-theme="dark" aqui é o estado inicial padrão.
+    O script abaixo o corrige IMEDIATAMENTE com a preferência real do usuário,
+    antes de qualquer render do React — eliminando o flash de tema errado.
+  -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="FinTrack — Controle financeiro pessoal" />
+
+    <!--
+      Script anti-flash: executa de forma síncrona antes do primeiro paint.
+      Aplica AMBOS os mecanismos de tema:
+        - data-theme="dark|light"  → seletor do nosso globals.css
+        - classe .dark             → seletor das variantes dark: do Tailwind
+                                     usadas nos componentes do repositório
+    -->
+    <script>
+      (function () {
+        var saved = localStorage.getItem("fintrack_theme");
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var isDark = saved === "dark" || (saved !== "light" && prefersDark);
+
+        // A) data-theme — usado pelo globals.css para trocar os tokens
+        document.documentElement.setAttribute(
+          "data-theme",
+          isDark ? "dark" : "light"
+        );
+
+        // B) classe .dark — usada pelas variantes dark: do Tailwind
+        if (isDark) {
+          document.documentElement.classList.add("dark");
+        }
+
+        // Fundo do <html> para evitar flash em scroll além do conteúdo
+        document.documentElement.style.backgroundColor = isDark
+          ? "oklch(0.12 0.005 250)"
+          : "oklch(0.99 0 0)";
+      })();
+    </script>
+
+    <title>FinTrack</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
