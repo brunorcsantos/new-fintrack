@@ -39,27 +39,27 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 const mainNavItems = [
   {
     title: "Dashboard",
-    url: "/dashboard",
+    url: "/",
     icon: LayoutDashboard,
   },
   {
     title: "Transacoes",
-    url: "/dashboard/transactions",
+    url: "/transactions",
     icon: ArrowLeftRight,
   },
   {
     title: "Categorias",
-    url: "/dashboard/categories",
+    url: "/categories",
     icon: Tags,
   },
   {
     title: "Orcamentos",
-    url: "/dashboard/budgets",
+    url: "/budgets",
     icon: Wallet,
   },
   {
     title: "Cartoes",
-    url: "/dashboard/cards",
+    url: "/cards",
     icon: CreditCard,
   },
 ]
@@ -67,12 +67,12 @@ const mainNavItems = [
 const secondaryNavItems = [
   {
     title: "Notificacoes",
-    url: "/dashboard/notifications",
+    url: "/notifications",
     icon: Bell,
   },
   {
     title: "Perfil",
-    url: "/dashboard/profile",
+    url: "/profile",
     icon: User,
   },
 ]
@@ -154,13 +154,13 @@ export function AppSidebar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-56">
             <DropdownMenuItem asChild>
-              <Link to="/dashboard/profile">
+              <Link to="/profile">
                 <User className="mr-2 h-4 w-4" />
                 Meu Perfil
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/dashboard/settings">
+              <Link to="/settings">
                 <Settings className="mr-2 h-4 w-4" />
                 Configuracoes
               </Link>

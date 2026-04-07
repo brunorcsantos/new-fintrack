@@ -15,17 +15,20 @@ import { SummaryCards } from "@/components/dashboard/summary-cards";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 
+
 export function Dashboard() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true)
+  
 
-  if (!user) return null;
-
+  
   useEffect(() => {
     // Simula carregamento de dados
     const timer = setTimeout(() => setIsLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
+  
+  if (!user) return null;
 
   const summaryData = {
     income: 10500,
