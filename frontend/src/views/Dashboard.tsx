@@ -1,6 +1,3 @@
-
-
-
 /**
  * src/views/Dashboard.tsx
  *
@@ -13,38 +10,46 @@ import { MonthlyTrend } from "@/components/dashboard/monthly-trend";
 import { RecentTransactions } from "@/components/dashboard/recent-transactions";
 import { SummaryCards } from "@/components/dashboard/summary-cards";
 import { useAuth } from "@/context/AuthContext";
-import { useEffect, useState } from "react";
-
+import { useDashboard } from "@/hooks/useDashboard";
+import { formatMonth } from "@/lib/utils";
+import { AlertCircle } from "lucide-react";
 
 export function Dashboard() {
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(true)
-  
+  const { summary, chartData, recentTransactions, month, isLoading, error } =
+    useDashboard();
 
-  
-  useEffect(() => {
-    // Simula carregamento de dados
-    const timer = setTimeout(() => setIsLoading(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
-  
   if (!user) return null;
 
-  const summaryData = {
-    income: 10500,
-    expenses: 5500,
-    balance: 5000,
-    savingsRate: 47.6,
+  if (error) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <DashboardHeader title="Dashboard" description={formatMonth(month)} />
+        <main className="flex-1 p-4 md:p-6 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <AlertCircle className="h-10 w-10 text-destructive" />
+            <p className="text-muted-foreground text-sm max-w-xs">{error}</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  const summaryData = summary ?? {
+    income: 0,
+    expenses: 0,
+    balance: 0,
+    savingsRate: 0,
   };
 
   return (
     <div className="flex flex-col min-h-screen">
       <DashboardHeader
         title="Dashboard"
-        description="Visao geral das suas financas"
+        description={`Visao geral de ${formatMonth(month)}`}
         action={{
           label: "Nova Transacao",
-          href: "/dashboard/transactions/new",
+          href: "/transactions",
         }}
       />
 
@@ -52,11 +57,11 @@ export function Dashboard() {
         <SummaryCards data={summaryData} isLoading={isLoading} />
 
         <div className="grid gap-6 lg:grid-cols-2">
-          <ExpenseChart isLoading={isLoading} />
+          <ExpenseChart data={chartData.length > 0 ? chartData : undefined} isLoading={isLoading} />
           <MonthlyTrend isLoading={isLoading} />
         </div>
 
-        <RecentTransactions isLoading={isLoading} />
+        <RecentTransactions transactions={recentTransactions.length > 0 ? recentTransactions : undefined} isLoading={isLoading} />
       </main>
     </div>
   );

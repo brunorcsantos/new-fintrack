@@ -17,16 +17,17 @@
 
 // IMPORTANTE: env.ts deve ser importado primeiro.
 // Ele valida process.env e encerra o processo se houver erros.
-import { env } from "./lib/env.js"
+import { env } from "./lib/env.js";
 
-import Fastify from "fastify"
-import cors from "@fastify/cors"
-import helmet from "@fastify/helmet"
+import Fastify from "fastify";
+import cors from "@fastify/cors";
+import helmet from "@fastify/helmet";
 
-import { errorHandler } from "./middleware/errorHandler.js"
-import { authRoutes } from "./routes/auth.js"
-import { categoriesRoutes } from "./routes/categories.js"
-import { transactionsRoutes } from "./routes/transactions.js"
+import { errorHandler } from "./middleware/errorHandler.js";
+import { authRoutes } from "./routes/auth.js";
+import { categoriesRoutes } from "./routes/categories.js";
+import { transactionsRoutes } from "./routes/transactions.js";
+import { profileRoutes } from "./routes/profile-route.js";
 
 // ─── Logger ───────────────────────────────────────────────────────────────────
 const loggerConfig =
@@ -35,49 +36,52 @@ const loggerConfig =
         level: "info",
         serializers: {
           req(req: { method: string; url: string }) {
-            return { method: req.method, url: req.url }
+            return { method: req.method, url: req.url };
           },
         },
       }
-    : { level: "info" }
+    : { level: "info" };
 
 // ─── Instância do Fastify ─────────────────────────────────────────────────────
-const fastify = Fastify({ logger: loggerConfig })
+const fastify = Fastify({ logger: loggerConfig });
 
 // ─── Plugins ──────────────────────────────────────────────────────────────────
 
 await fastify.register(cors, {
   origin: env.FRONTEND_URL,
   credentials: true,
-})
+});
 
 await fastify.register(helmet, {
   contentSecurityPolicy: false,
-})
+});
 
 // ─── Error Handler ────────────────────────────────────────────────────────────
-fastify.setErrorHandler(errorHandler)
+fastify.setErrorHandler(errorHandler);
 
 // ─── Rotas ────────────────────────────────────────────────────────────────────
 fastify.get("/health", async () => ({
   status: "ok",
   timestamp: new Date().toISOString(),
   environment: env.NODE_ENV,
-}))
+}));
 
 // Fase 1: autenticação
-await fastify.register(authRoutes)
+await fastify.register(authRoutes);
 
 // Fase 2: core financeiro
-await fastify.register(categoriesRoutes)
-await fastify.register(transactionsRoutes)
+await fastify.register(categoriesRoutes);
+await fastify.register(transactionsRoutes);
+
+// Fase 4: perfil
+await fastify.register(profileRoutes);
 
 // ─── Inicialização ────────────────────────────────────────────────────────────
 try {
-  await fastify.listen({ port: env.PORT, host: "0.0.0.0" })
-  fastify.log.info(`🚀 Servidor rodando em http://localhost:${env.PORT}`)
-  fastify.log.info(`📋 Health check: http://localhost:${env.PORT}/health`)
+  await fastify.listen({ port: env.PORT, host: "0.0.0.0" });
+  fastify.log.info(`🚀 Servidor rodando em http://localhost:${env.PORT}`);
+  fastify.log.info(`📋 Health check: http://localhost:${env.PORT}/health`);
 } catch (err) {
-  fastify.log.error(err)
-  process.exit(1)
+  fastify.log.error(err);
+  process.exit(1);
 }

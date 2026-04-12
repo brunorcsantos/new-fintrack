@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -10,22 +8,26 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
+import { formatCurrency } from "@/lib/utils";
+
+interface ExpenseChartItem {
+  name: string;
+  value: number;
+  color: string; // hex da API ou variável CSS do mock
+}
 
 interface ExpenseChartProps {
-  data?: Array<{
-    name: string;
-    value: number;
-    color: string;
-  }>;
+  data?: ExpenseChartItem[];
   isLoading?: boolean;
 }
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value);
-}
+const FALLBACK_DATA: ExpenseChartItem[] = [
+  { name: "Alimentação", value: 1200, color: "var(--chart-1)" },
+  { name: "Transporte", value: 800, color: "var(--chart-2)" },
+  { name: "Moradia", value: 1500, color: "var(--chart-3)" },
+  { name: "Lazer", value: 500, color: "var(--chart-4)" },
+  { name: "Outros", value: 320, color: "var(--chart-5)" },
+];
 
 export function ExpenseChart({ data, isLoading }: ExpenseChartProps) {
   if (isLoading) {
@@ -43,14 +45,8 @@ export function ExpenseChart({ data, isLoading }: ExpenseChartProps) {
     );
   }
 
-  const chartData = data ?? [
-    { name: "Alimentacao", value: 1200, color: "var(--chart-1)" },
-    { name: "Transporte", value: 800, color: "var(--chart-2)" },
-    { name: "Moradia", value: 1500, color: "var(--chart-3)" },
-    { name: "Lazer", value: 500, color: "var(--chart-4)" },
-    { name: "Outros", value: 320, color: "var(--chart-5)" },
-  ];
-
+  const chartData = data?.length ? data : FALLBACK_DATA;
+  const isMock = !data || data.length === 0;
   const total = chartData.reduce((sum, item) => sum + item.value, 0);
 
   return (
@@ -58,6 +54,11 @@ export function ExpenseChart({ data, isLoading }: ExpenseChartProps) {
       <CardHeader>
         <CardTitle className="text-base font-medium">
           Despesas por Categoria
+          {isMock && (
+            <span className="ml-2 text-xs font-normal text-muted-foreground">
+              (exemplo)
+            </span>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -80,13 +81,13 @@ export function ExpenseChart({ data, isLoading }: ExpenseChartProps) {
               <Tooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
-                    const data = payload[0].payload;
-                    const percentage = ((data.value / total) * 100).toFixed(1);
+                    const d = payload[0].payload;
+                    const pct = ((d.value / total) * 100).toFixed(1);
                     return (
                       <div className="rounded-lg border bg-background p-3 shadow-md">
-                        <p className="font-medium">{data.name}</p>
+                        <p className="font-medium">{d.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {formatCurrency(data.value)} ({percentage}%)
+                          {formatCurrency(d.value)} ({pct}%)
                         </p>
                       </div>
                     );

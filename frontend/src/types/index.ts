@@ -60,6 +60,7 @@ export type Transaction = {
   subcategory: Pick<Subcategory, "id" | "name" | "icon"> | null
 }
 
+
 export type TransactionSummary = {
   totalIncome: string
   totalExpense: string
@@ -70,6 +71,7 @@ export type TransactionSummary = {
     categoryColor: string
     categoryIcon: string
     total: string
+    totalExpense: string
     percentage: number
   }>
 }
