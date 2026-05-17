@@ -1,6 +1,15 @@
-"use client"
+/**
+ * src/views/Transactions.tsx
+ *
+ * Página de transações conectada à API real.
+ *
+ * Usa useTransactions para buscar, criar, editar e deletar transações.
+ * Usa useCategories para popular o select de categorias no formulário.
+ * Implementa filtros por mês e tipo conforme o plano.
+ */
 
-import { useState, useEffect } from "react"
+
+import { useState, useEffect, useCallback } from "react"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
 import { TransactionsList } from "@/components/transactions/transactions-list"
 import { TransactionsFilters } from "@/components/transactions/transactions-filters"

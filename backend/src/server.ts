@@ -23,6 +23,7 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 
+import rateLimiter from "./plugins/rateLimiter.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { authRoutes } from "./routes/auth.js";
 import { categoriesRoutes } from "./routes/categories.js";
@@ -52,9 +53,27 @@ await fastify.register(cors, {
   credentials: true,
 });
 
+// Headers de segurança — CSP habilitado conforme plano
 await fastify.register(helmet, {
-  contentSecurityPolicy: false,
-});
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"], // necessário para inline styles do React
+      imgSrc: ["'self'", "data:", "blob:"],
+      fontSrc: ["'self'"],
+      connectSrc: ["'self'", env.FRONTEND_URL],
+      frameSrc: ["'none'"],
+      objectSrc: ["'none'"],
+      baseUri: ["'self'"],
+    },
+  },
+  // Headers adicionais do plano de segurança
+  crossOriginEmbedderPolicy: false, // desabilita para compatibilidade com OAuth redirects
+})
+
+// Rate limiting — Fase 1: desde o dia 1
+await fastify.register(rateLimiter)
 
 // ─── Error Handler ────────────────────────────────────────────────────────────
 fastify.setErrorHandler(errorHandler);

@@ -8,7 +8,6 @@ import { AuthCallback } from "@/views/AuthCallback";
 import DashboardLayout from "@/views/DashboardLayout";
 import { Dashboard } from "@/views/Dashboard";
 import { NotFound } from "@/views/NotFound";
-import Transactions from "./views/Transactions";
 import NotificationsPage from "./views/Notifications";
 import TransactionsPage from "./views/Transactions";
 import CategoriesPage from "./views/Categories";
@@ -16,7 +15,7 @@ import ProfilePage from "./views/Profile";
 import CardsPage from "./views/Cards";
 import BudgetsPage from "./views/Budgets";
 
-export function App({ children }: { children: React.ReactNode }) {
+export function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
@@ -35,15 +34,15 @@ export function App({ children }: { children: React.ReactNode }) {
               </ProtectedRoute>
             }
           >
+            <Route index element={<Dashboard />} />
             <Route path="/transactions" element={<TransactionsPage />} />
+            <Route path="/categories" element={<CategoriesPage />} />
+            <Route path="/budgets" element={<BudgetsPage />} />
+            <Route path="/cards" element={<CardsPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/cards" element={<CardsPage />} />
-            <Route path="/budgets" element={<BudgetsPage />} />
             {/* ↑ tag aberta — rotas filhas renderizam no <Outlet /> do layout */}
-            <Route index element={<Dashboard />} />
           </Route>
 
           {/* ── 404 ────────────────────────────────────────────────────── */}
