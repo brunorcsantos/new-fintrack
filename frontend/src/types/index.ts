@@ -26,7 +26,6 @@ export type AuthUser = {
 
 export type Subcategory = {
   id: string
-  slug: string
   name: string
   icon: string
   categoryId: string
@@ -34,7 +33,6 @@ export type Subcategory = {
 
 export type Category = {
   id: string
-  slug: string
   name: string
   icon: string
   color: string

@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Spinner } from "@/components/ui/spinner"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Dialog,
   DialogContent,
@@ -12,63 +12,63 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../ui/popover"
+} from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import EmojiPicker from "emoji-picker-react";
+import { HexColorPicker } from "react-colorful";
 
 interface CategoryFormProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSave: (data: {
+    name: string;
+    icon: string;
+    color: string;
+  }) => Promise<void>;
   category?: {
-    id: string
-    name: string
-    emoji: string
-    color: string
-  }
+    id: string;
+    name: string;
+    emoji: string;
+    color: string;
+  };
 }
-
-const emojis = [
-  "💼", "💻", "🛒", "🚗", "🏠", "🎮", "🏥", "📚",
-  "🛍️", "📺", "✈️", "🍔", "☕", "🎬", "🏋️", "💇",
-  "🐾", "🎁", "💰", "📈", "🏦", "💳", "🔧", "📱",
-]
-
-const colors = [
-  "#ef4444", "#f97316", "#eab308", "#22c55e",
-  "#14b8a6", "#06b6d4", "#3b82f6", "#6366f1",
-  "#8b5cf6", "#a855f7", "#d946ef", "#ec4899",
-]
 
 export function CategoryForm({
   open,
   onOpenChange,
+  onSave,
   category,
 }: CategoryFormProps) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: category?.name ?? "",
     emoji: category?.emoji ?? "📦",
-    color: category?.color ?? colors[0],
-  })
+    color: category?.color ?? "",
+  });
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const isEditing = !!category
+  const isEditing = !!category;
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    setIsLoading(false)
-    onOpenChange(false)
-  }
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await onSave({
+        name: formData.name,
+        icon: formData.emoji,
+        color: formData.color,
+      });
+      onOpenChange(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent className="sm:max-w-[400px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Editar Categoria" : "Nova Categoria"}
@@ -84,37 +84,14 @@ export function CategoryForm({
           <div className="flex items-end gap-3">
             <div className="space-y-2">
               <Label>Icone</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="h-11 w-11 p-0 text-xl"
-                    type="button"
-                  >
-                    {formData.emoji}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-64" align="start">
-                  <div className="grid grid-cols-8 gap-1">
-                    {emojis.map((emoji) => (
-                      <button
-                        key={emoji}
-                        type="button"
-                        className={`p-2 text-lg rounded hover:bg-muted transition-colors ${
-                          formData.emoji === emoji ? "bg-muted" : ""
-                        }`}
-                        onClick={() =>
-                          setFormData({ ...formData, emoji })
-                        }
-                      >
-                        {emoji}
-                      </button>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
+              <button
+                type="button"
+                className="h-11 w-11 text-xl border rounded-md flex items-center justify-center hover:bg-accent transition-colors"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              >
+                {formData.emoji}
+              </button>
             </div>
-
             <div className="flex-1 space-y-2">
               <Label htmlFor="name">Nome</Label>
               <Input
@@ -130,23 +107,36 @@ export function CategoryForm({
             </div>
           </div>
 
+          {/* picker aparece/some dentro do fluxo normal */}
+          {showEmojiPicker && (
+            <EmojiPicker
+              width="100%"
+              height={350}
+              onEmojiClick={(emojiData) => {
+                setFormData({ ...formData, emoji: emojiData.emoji });
+                setShowEmojiPicker(false);
+              }}
+            />
+          )}
+
+          {/* cor, preview, footer */}
           <div className="space-y-2">
             <Label>Cor</Label>
-            <div className="flex flex-wrap gap-2">
-              {colors.map((color) => (
+            <Popover>
+              <PopoverTrigger asChild>
                 <button
-                  key={color}
                   type="button"
-                  className={`h-8 w-8 rounded-full transition-all ${
-                    formData.color === color
-                      ? "ring-2 ring-ring ring-offset-2 ring-offset-background"
-                      : ""
-                  }`}
-                  style={{ backgroundColor: color }}
-                  onClick={() => setFormData({ ...formData, color })}
+                  className="h-8 w-8 rounded-full border-2 border-border"
+                  style={{ backgroundColor: formData.color }}
                 />
-              ))}
-            </div>
+              </PopoverTrigger>
+              <PopoverContent align="start">
+                <HexColorPicker
+                  color={formData.color}
+                  onChange={(color) => setFormData({ ...formData, color })}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="pt-2">
@@ -194,5 +184,5 @@ export function CategoryForm({
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

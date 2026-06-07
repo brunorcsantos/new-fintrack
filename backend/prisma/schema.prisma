@@ -103,7 +103,6 @@ model RefreshToken {
 // ─── Categoria ────────────────────────────────────────────────────────────────
 model Category {
   id     String @id @default(uuid())
-  slug   String // ex: "moradia" — usado em URLs e como chave estável
   name   String // ex: "Moradia" — exibido na UI
   icon   String // emoji: "🏠"
   color  String // hex: "#E8845A"
@@ -119,15 +118,12 @@ model Category {
   budgets       Budget[]
   recurringItems RecurringTransaction[]
 
-  // Dois usuários podem ter categorias com o mesmo slug, mas um usuário
-  // não pode ter duas categorias com o mesmo slug.
-  @@unique([slug, userId])
+ 
   @@index([userId])
 }
 
 model Subcategory {
   id         String    @id @default(uuid())
-  slug       String
   name       String
   icon       String
   categoryId String
@@ -137,7 +133,6 @@ model Subcategory {
   transactions Transaction[]
   budgets      Budget[]
 
-  @@unique([slug, categoryId])
   @@index([categoryId])
 }
 

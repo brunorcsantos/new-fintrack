@@ -16,7 +16,6 @@ import { fileURLToPath } from "url"
 
 // Tipo auxiliar para descrever a estrutura das categorias padrão
 type DefaultCategory = {
-  slug: string
   name: string
   icon: string
   color: string
@@ -27,7 +26,6 @@ type DefaultCategory = {
 // A ordem importa para a exibição na UI.
 export const DEFAULT_CATEGORIES: DefaultCategory[] = [
   {
-    slug: "moradia",
     name: "Moradia",
     icon: "🏠",
     color: "#E8845A",
@@ -40,7 +38,6 @@ export const DEFAULT_CATEGORIES: DefaultCategory[] = [
     ],
   },
   {
-    slug: "alimentacao",
     name: "Alimentação",
     icon: "🍽️",
     color: "#5AB88A",
@@ -52,7 +49,6 @@ export const DEFAULT_CATEGORIES: DefaultCategory[] = [
     ],
   },
   {
-    slug: "transporte",
     name: "Transporte",
     icon: "🚗",
     color: "#5A8FE8",
@@ -64,7 +60,6 @@ export const DEFAULT_CATEGORIES: DefaultCategory[] = [
     ],
   },
   {
-    slug: "saude",
     name: "Saúde",
     icon: "❤️",
     color: "#E85A7A",
@@ -76,7 +71,6 @@ export const DEFAULT_CATEGORIES: DefaultCategory[] = [
     ],
   },
   {
-    slug: "lazer",
     name: "Lazer",
     icon: "🎭",
     color: "#A85AE8",
@@ -88,7 +82,6 @@ export const DEFAULT_CATEGORIES: DefaultCategory[] = [
     ],
   },
   {
-    slug: "cartao-credito",
     name: "Cartão de Crédito",
     icon: "💳",
     color: "#E8C45A",
@@ -98,7 +91,6 @@ export const DEFAULT_CATEGORIES: DefaultCategory[] = [
     ],
   },
   {
-    slug: "receita",
     name: "Receita",
     icon: "💰",
     color: "#4CAF50",
@@ -129,7 +121,6 @@ export function buildSeedOperations(prisma: PrismaClient, userId: string) {
     // Cria a categoria principal
     const categoryCreate = prisma.category.create({
       data: {
-        slug: cat.slug,
         name: cat.name,
         icon: cat.icon,
         color: cat.color,

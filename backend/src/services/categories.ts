@@ -27,26 +27,14 @@ export type CreateCategoryInput = {
   name: string
   icon: string
   color: string
-  slug?: string // opcional: gerado automaticamente se ausente
 }
 
 export type UpdateCategoryInput = Partial<CreateCategoryInput>
 
 // ─── Helpers privados ─────────────────────────────────────────────────────────
 
-/**
- * Converte nome em slug URL-friendly.
- * "Cartão de Crédito" → "cartao-de-credito"
- */
-function nameToSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD")                    // separa acentos dos caracteres
-    .replace(/[\u0300-\u036f]/g, "")     // remove os acentos
-    .replace(/[^a-z0-9\s-]/g, "")       // remove caracteres especiais
-    .trim()
-    .replace(/\s+/g, "-")               // espaços → hífens
-}
+
+
 
 // ─── Operações públicas ───────────────────────────────────────────────────────
 
@@ -103,11 +91,9 @@ export async function getCategoryById(id: string, userId: string) {
  * (tratado pelo errorHandler via Prisma P2002 unique constraint).
  */
 export async function createCategory(userId: string, input: CreateCategoryInput) {
-  const slug = input.slug ?? nameToSlug(input.name)
 
   return prisma.category.create({
     data: {
-      slug,
       name: input.name,
       icon: input.icon,
       color: input.color,
@@ -142,8 +128,6 @@ export async function updateCategory(
     throw error
   }
 
-  // Recalcula slug se o nome foi alterado e slug não foi fornecido explicitamente
-  const slug = input.slug ?? (input.name ? nameToSlug(input.name) : undefined)
 
   return prisma.category.update({
     where: { id },
@@ -151,7 +135,6 @@ export async function updateCategory(
       ...(input.name !== undefined && { name: input.name }),
       ...(input.icon !== undefined && { icon: input.icon }),
       ...(input.color !== undefined && { color: input.color }),
-      ...(slug !== undefined && { slug }),
     },
     include: {
       subcategories: {

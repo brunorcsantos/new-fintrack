@@ -1,18 +1,16 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { DashboardHeader } from "@/components/dashboard/dashboard-header"
-import { CategoriesList } from "@/components/categories/categories-list"
-import { CategoryForm } from "@/components/categories/category-form"
+import { useState, useEffect } from "react";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { CategoriesList } from "@/components/categories/categories-list";
+import { CategoryForm } from "@/components/categories/category-form";
+import { useCategoriesContext } from "@/hooks/useCategoriesContext";
 
 export default function CategoriesPage() {
-  const [isLoading, setIsLoading] = useState(true)
-  const [showForm, setShowForm] = useState(false)
+  const [isLoading, setIsLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1000)
-    return () => clearTimeout(timer)
-  }, [])
+  const { createCategory } = useCategoriesContext();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -26,10 +24,17 @@ export default function CategoriesPage() {
       />
 
       <main className="flex-1 p-4 md:p-6">
-        <CategoriesList/>
+        <CategoriesList />
       </main>
 
-      <CategoryForm open={showForm} onOpenChange={setShowForm} />
+      <CategoryForm
+        onSave={async (data) => {
+          await createCategory(data);
+          setShowForm(false);
+        }}
+        open={showForm}
+        onOpenChange={setShowForm}
+      />
     </div>
-  )
+  );
 }

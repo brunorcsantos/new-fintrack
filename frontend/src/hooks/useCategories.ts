@@ -18,7 +18,6 @@ export type CreateCategoryData = {
   name: string
   icon: string
   color: string
-  slug?: string
 }
 
 export type UseCategoriesReturn = {

@@ -29,7 +29,8 @@ export function CategoriesList() {
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(
     null,
   );
-  const { categories, isLoading, fetchCategories, deleteCategory } =
+  const [showCreateForm, setShowCreateForm] = useState(false)
+  const { categories, isLoading, fetchCategories, deleteCategory, updateCategory } =
     useCategoriesContext();
 
   useEffect(() => {
@@ -114,6 +115,10 @@ export function CategoriesList() {
       <CategoryForm
         open={!!editCategory}
         onOpenChange={(open) => !open && setEditCategory(null)}
+        onSave={async (data) => {
+          await updateCategory(editCategory!.id, data);
+          setEditCategory(null);
+        }}
         category={
           editCategory
             ? {
