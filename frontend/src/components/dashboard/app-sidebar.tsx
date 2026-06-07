@@ -137,8 +137,8 @@ export function AppSidebar() {
 
       <SidebarFooter className="p-4">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-sidebar-accent transition-colors">
+          <DropdownMenuTrigger >
+            <div className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-sidebar-accent transition-colors">
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                   JD
@@ -150,23 +150,23 @@ export function AppSidebar() {
                   joao@email.com
                 </p>
               </div>
-            </button>
+            </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-56">
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem >
               <Link to="/profile">
                 <User className="mr-2 h-4 w-4" />
                 Meu Perfil
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem >
               <Link to="/settings">
                 <Settings className="mr-2 h-4 w-4" />
                 Configuracoes
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem >
               <Link to="/login" className="text-destructive">
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair

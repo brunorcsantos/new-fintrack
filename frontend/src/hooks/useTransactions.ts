@@ -21,11 +21,11 @@
 import { useState, useCallback } from "react"
 import { api } from "@/lib/api"
 import { currentMonth } from "@/lib/utils"
-import type { Transaction, TransactionSummary, PaginatedResponse } from "@/types"
+import type { Transaction, TransactionSummary, PaginatedResponse, TxTypeFilter } from "@/types"
 
 export type TransactionFilters = {
   month?: string
-  type?: "income" | "expense"
+  type?: TxTypeFilter
   categoryId?: string
   page?: number
   limit?: number

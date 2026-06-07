@@ -26,7 +26,7 @@ export default function CategoriesPage() {
       />
 
       <main className="flex-1 p-4 md:p-6">
-        <CategoriesList isLoading={isLoading} />
+        <CategoriesList/>
       </main>
 
       <CategoryForm open={showForm} onOpenChange={setShowForm} />

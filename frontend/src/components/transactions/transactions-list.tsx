@@ -1,155 +1,57 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   ArrowUpRight,
   ArrowDownRight,
   MoreHorizontal,
   Pencil,
   Trash2,
-} from "lucide-react"
-import { TransactionForm } from "./transaction-form"
-
-interface Transaction {
-  id: string
-  description: string
-  amount: number
-  type: "income" | "expense"
-  category: string
-  categoryEmoji: string
-  date: string
-}
-
-interface TransactionsListProps {
-  transactions?: Transaction[]
-  isLoading?: boolean
-}
+} from "lucide-react";
+import { TransactionForm } from "./transaction-form";
+import { useTransactionsContext } from "@/hooks/useTransactionsContext";
+import type { Transaction } from "@/types"
+import { toNumber } from "@/lib/utils";
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
-  }).format(value)
+  }).format(value);
 }
 
 function formatDate(dateString: string) {
-  const date = new Date(dateString)
+  const date = new Date(dateString);
   return new Intl.DateTimeFormat("pt-BR", {
     day: "2-digit",
     month: "short",
     year: "numeric",
-  }).format(date)
+  }).format(date);
 }
 
-const mockTransactions: Transaction[] = [
-  {
-    id: "1",
-    description: "Salario",
-    amount: 8500,
-    type: "income",
-    category: "Salario",
-    categoryEmoji: "💼",
-    date: "2024-01-15",
-  },
-  {
-    id: "2",
-    description: "Supermercado Extra",
-    amount: 456.78,
-    type: "expense",
-    category: "Alimentacao",
-    categoryEmoji: "🛒",
-    date: "2024-01-14",
-  },
-  {
-    id: "3",
-    description: "Uber",
-    amount: 32.5,
-    type: "expense",
-    category: "Transporte",
-    categoryEmoji: "🚗",
-    date: "2024-01-14",
-  },
-  {
-    id: "4",
-    description: "Netflix",
-    amount: 39.9,
-    type: "expense",
-    category: "Assinaturas",
-    categoryEmoji: "📺",
-    date: "2024-01-13",
-  },
-  {
-    id: "5",
-    description: "Freelance Design",
-    amount: 2000,
-    type: "income",
-    category: "Freelance",
-    categoryEmoji: "💻",
-    date: "2024-01-12",
-  },
-  {
-    id: "6",
-    description: "Aluguel",
-    amount: 2500,
-    type: "expense",
-    category: "Moradia",
-    categoryEmoji: "🏠",
-    date: "2024-01-10",
-  },
-  {
-    id: "7",
-    description: "Conta de Luz",
-    amount: 180.45,
-    type: "expense",
-    category: "Moradia",
-    categoryEmoji: "🏠",
-    date: "2024-01-08",
-  },
-  {
-    id: "8",
-    description: "Restaurante",
-    amount: 125.0,
-    type: "expense",
-    category: "Alimentacao",
-    categoryEmoji: "🛒",
-    date: "2024-01-07",
-  },
-  {
-    id: "9",
-    description: "Spotify",
-    amount: 21.9,
-    type: "expense",
-    category: "Assinaturas",
-    categoryEmoji: "📺",
-    date: "2024-01-05",
-  },
-  {
-    id: "10",
-    description: "Rendimento Investimentos",
-    amount: 350.0,
-    type: "income",
-    category: "Investimentos",
-    categoryEmoji: "📈",
-    date: "2024-01-03",
-  },
-]
 
-export function TransactionsList({
-  transactions = mockTransactions,
-  isLoading,
-}: TransactionsListProps) {
+export function TransactionsList() {
   const [editTransaction, setEditTransaction] = useState<Transaction | null>(
-    null
-  )
+    null,
+  );
+  const { transactions, fetchTransactions, isLoading, filters } = useTransactionsContext();
+
+  useEffect(() => {
+    try {
+      fetchTransactions();
+    } catch (error) {
+      console.log("Erro");
+    }
+  }, [filters]);
 
   if (isLoading) {
     return (
@@ -169,7 +71,7 @@ export function TransactionsList({
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -183,7 +85,7 @@ export function TransactionsList({
                 className="flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-lg shrink-0">
-                  {transaction.categoryEmoji}
+                  {transaction.category.icon}
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -191,7 +93,7 @@ export function TransactionsList({
                     {transaction.description}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {transaction.category} • {formatDate(transaction.date)}
+                    {transaction.category.name} • {formatDate(transaction.date)}
                   </p>
                 </div>
 
@@ -210,16 +112,16 @@ export function TransactionsList({
                       }`}
                     >
                       {transaction.type === "income" ? "+" : "-"}
-                      {formatCurrency(transaction.amount)}
+                      {formatCurrency(toNumber(transaction.amount))}
                     </span>
                   </div>
 
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <DropdownMenuTrigger>
+                      <div className="h-8 w-8">
                         <MoreHorizontal className="h-4 w-4" />
                         <span className="sr-only">Acoes</span>
-                      </Button>
+                      </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
@@ -249,14 +151,14 @@ export function TransactionsList({
             ? {
                 id: editTransaction.id,
                 description: editTransaction.description,
-                amount: editTransaction.amount,
+                amount: toNumber(editTransaction.amount),
                 type: editTransaction.type,
-                category: editTransaction.category,
+                category: editTransaction.category.id,
                 date: editTransaction.date,
               }
             : undefined
         }
       />
     </>
-  )
+  );
 }

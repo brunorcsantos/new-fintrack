@@ -51,25 +51,13 @@ const fastify = Fastify({ logger: loggerConfig });
 await fastify.register(cors, {
   origin: env.FRONTEND_URL,
   credentials: true,
+  methods: ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
 });
 
 // Headers de segurança — CSP habilitado conforme plano
 await fastify.register(helmet, {
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"], // necessário para inline styles do React
-      imgSrc: ["'self'", "data:", "blob:"],
-      fontSrc: ["'self'"],
-      connectSrc: ["'self'", env.FRONTEND_URL],
-      frameSrc: ["'none'"],
-      objectSrc: ["'none'"],
-      baseUri: ["'self'"],
-    },
-  },
-  // Headers adicionais do plano de segurança
-  crossOriginEmbedderPolicy: false, // desabilita para compatibilidade com OAuth redirects
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
 })
 
 // Rate limiting — Fase 1: desde o dia 1

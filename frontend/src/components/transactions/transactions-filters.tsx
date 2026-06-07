@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Select,
@@ -6,41 +6,29 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import { X } from "lucide-react"
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
+import { TxTypeFilter } from "@/types";
 
 interface TransactionsFiltersProps {
-  month: string
-  type: string
-  onMonthChange: (month: string) => void
-  onTypeChange: (type: string) => void
-  onClearFilters: () => void
+  month: string;
+  type: string;
+  onMonthChange: (month: string) => void;
+  onTypeChange: (type: TxTypeFilter) => void;
+  onClearFilters: () => void;
 }
 
-const months = [
-  { value: "01", label: "Janeiro" },
-  { value: "02", label: "Fevereiro" },
-  { value: "03", label: "Marco" },
-  { value: "04", label: "Abril" },
-  { value: "05", label: "Maio" },
-  { value: "06", label: "Junho" },
-  { value: "07", label: "Julho" },
-  { value: "08", label: "Agosto" },
-  { value: "09", label: "Setembro" },
-  { value: "10", label: "Outubro" },
-  { value: "11", label: "Novembro" },
-  { value: "12", label: "Dezembro" },
-]
+const months = obterMeses();
 
 export function TransactionsFilters({
-  month,
+  month = "all",
   type,
   onMonthChange,
   onTypeChange,
   onClearFilters,
 }: TransactionsFiltersProps) {
-  const hasFilters = month !== "all" || type !== "all"
+  const hasFilters = month !== "all" || type !== "all";
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -91,5 +79,18 @@ export function TransactionsFilters({
         </Button>
       )}
     </div>
-  )
+  );
+}
+
+function obterMeses(idioma = "pt-BR") {
+  const formato = new Intl.DateTimeFormat(idioma, {
+    month: "long",
+  });
+
+  const currentYear = new Date().getFullYear();
+
+  return Array.from({ length: 12 }, (_, i) => ({
+    value: `${currentYear}-${String(i + 1).padStart(2, "0")}`,
+    label: formato.format(new Date(currentYear, i, 1)),
+  }));
 }

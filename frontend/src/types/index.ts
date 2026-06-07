@@ -45,6 +45,7 @@ export type Category = {
 // ─── Transação ────────────────────────────────────────────────────────────────
 
 export type TxType = "income" | "expense"
+export type TxTypeFilter = TxType | "all"
 
 export type Transaction = {
   id: string
@@ -75,6 +76,8 @@ export type TransactionSummary = {
     percentage: number
   }>
 }
+
+
 
 // ─── Orçamento ────────────────────────────────────────────────────────────────
 

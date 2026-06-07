@@ -20,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { TxTypeFilter } from "@/types"
 
 interface TransactionFormProps {
   open: boolean
@@ -28,7 +29,7 @@ interface TransactionFormProps {
     id: string
     description: string
     amount: number
-    type: "income" | "expense"
+    type: TxTypeFilter
     category: string
     date: string
   }

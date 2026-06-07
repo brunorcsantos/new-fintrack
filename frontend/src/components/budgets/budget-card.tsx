@@ -58,15 +58,13 @@ export function BudgetCard({ budget, onEdit, onDelete }: BudgetCardProps) {
           </div>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
+            <DropdownMenuTrigger>
+              <div
                 className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <MoreHorizontal className="h-4 w-4" />
                 <span className="sr-only">Acoes</span>
-              </Button>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={onEdit}>
