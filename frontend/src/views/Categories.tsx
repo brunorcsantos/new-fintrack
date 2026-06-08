@@ -7,7 +7,6 @@ import { CategoryForm } from "@/components/categories/category-form";
 import { useCategoriesContext } from "@/hooks/useCategoriesContext";
 
 export default function CategoriesPage() {
-  const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
   const { createCategory } = useCategoriesContext();

@@ -29,6 +29,7 @@ import { authRoutes } from "./routes/auth.js";
 import { categoriesRoutes } from "./routes/categories.js";
 import { transactionsRoutes } from "./routes/transactions.js";
 import { profileRoutes } from "./routes/profile-route.js";
+import { subcategoriesRoutes } from "./routes/subcategories.js";
 
 // ─── Logger ───────────────────────────────────────────────────────────────────
 const loggerConfig =
@@ -78,6 +79,7 @@ await fastify.register(authRoutes);
 
 // Fase 2: core financeiro
 await fastify.register(categoriesRoutes);
+await fastify.register(subcategoriesRoutes);
 await fastify.register(transactionsRoutes);
 
 // Fase 4: perfil

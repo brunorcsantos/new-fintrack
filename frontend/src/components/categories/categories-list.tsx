@@ -23,15 +23,23 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { CategoryDetail } from "./category-detail";
 
 export function CategoriesList() {
   const [editCategory, setEditCategory] = useState<Category | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(
     null,
   );
-  const [showCreateForm, setShowCreateForm] = useState(false)
-  const { categories, isLoading, fetchCategories, deleteCategory, updateCategory } =
-    useCategoriesContext();
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null,
+  );
+  const {
+    categories,
+    isLoading,
+    fetchCategories,
+    deleteCategory,
+    updateCategory,
+  } = useCategoriesContext();
 
   useEffect(() => {
     try {
@@ -65,7 +73,13 @@ export function CategoriesList() {
     <>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {categories.map((category) => (
-          <Card key={category.id} className="group">
+          <Card
+            key={category.id}
+            className="group"
+            onClick={() => {
+              setSelectedCategory(category)
+            }}
+          >
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
                 <div
@@ -93,13 +107,19 @@ export function CategoriesList() {
                     </div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setEditCategory(category)}>
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation()
+                      setEditCategory(category)
+                      }}>
                       <Pencil className="mr-2 h-4 w-4" />
                       Editar
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-destructive"
-                      onClick={() => setDeletingCategory(category)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setDeletingCategory(category)}
+                      }
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
                       Excluir
@@ -158,6 +178,11 @@ export function CategoriesList() {
           </AlertDialogContent>
         </AlertDialog>
       )}
+      <CategoryDetail
+        open={!!selectedCategory}
+        onOpenChange={(open) => !open && setSelectedCategory(null)}
+        category={selectedCategory}
+      />
     </>
   );
 }
