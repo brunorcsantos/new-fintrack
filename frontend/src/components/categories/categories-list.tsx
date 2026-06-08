@@ -33,6 +33,7 @@ export function CategoriesList() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null,
   );
+  
   const {
     categories,
     isLoading,

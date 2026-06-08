@@ -60,27 +60,34 @@ export function CategoryDetail({
     if (open && category) {
       fetchSubcategories(category.id);
     }
+     
   }, [open, category]);
 
   if (!category) return null;
 
   if (isLoading) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <Card key={i}>
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <Skeleton className="h-12 w-12 rounded-full" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-5 w-24" />
-                  <Skeleton className="h-3 w-32" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-1">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Card key={i} className="border-none shadow-none">
+                  <CardContent className="p-1">
+                    <div className="flex items-start gap-3 ">
+                      <Skeleton className="h-12 w-12 rounded-full" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-5 w-24" />
+                        <Skeleton className="h-3 w-32" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     );
   }
 
@@ -103,7 +110,10 @@ export function CategoryDetail({
 
           {/* lista de subcategorias */}
           {subcategories.map((subcategory) => (
-            <div key={subcategory.id} className="flex items-center justify-between gap-3 group">
+            <div
+              key={subcategory.id}
+              className="flex items-center justify-between gap-3 group"
+            >
               <div className="flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full text-xl shrink-0">
                   {subcategory.icon}
@@ -120,8 +130,8 @@ export function CategoryDetail({
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
                     onClick={(e) => {
-                      e.stopPropagation()
-                      setEditingSubcategory(subcategory)
+                      e.stopPropagation();
+                      setEditingSubcategory(subcategory);
                     }}
                   >
                     <Pencil className="mr-2 h-4 w-4" />
@@ -130,8 +140,8 @@ export function CategoryDetail({
                   <DropdownMenuItem
                     className="text-destructive"
                     onClick={(e) => {
-                      e.stopPropagation()
-                      setDeletingSubcategory(subcategory)
+                      e.stopPropagation();
+                      setDeletingSubcategory(subcategory);
                     }}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
