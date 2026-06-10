@@ -87,7 +87,7 @@ await fastify.register(profileRoutes);
 
 // ─── Inicialização ────────────────────────────────────────────────────────────
 try {
-  await fastify.listen({ port: env.PORT, host: "0.0.0.0" });
+  await fastify.listen({ port: env.PORT || 3333, host: "0.0.0.0" });
   fastify.log.info(`🚀 Servidor rodando em http://localhost:${env.PORT}`);
   fastify.log.info(`📋 Health check: http://localhost:${env.PORT}/health`);
 } catch (err) {

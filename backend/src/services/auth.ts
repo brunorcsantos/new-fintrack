@@ -18,7 +18,7 @@ import {
   verifyRefreshToken,
   refreshTokenExpiresAt,
 } from "../lib/tokens.js"
-import { buildSeedOperations } from "../../prisma/seed.js"
+import { buildSeedOperations } from "../lib/defaultCategories.js"
 import crypto from "crypto"
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
