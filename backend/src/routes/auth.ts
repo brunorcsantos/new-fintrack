@@ -75,7 +75,7 @@ function createGitHubProvider() {
   if (!env.GITHUB_CLIENT_ID || !env.GITHUB_CLIENT_SECRET || !env.GITHUB_REDIRECT_URI) {
     return null
   }
-  return new GitHub(env.GITHUB_CLIENT_ID, env.GITHUB_CLIENT_SECRET)
+  return new GitHub(env.GITHUB_CLIENT_ID, env.GITHUB_CLIENT_SECRET, env.GITHUB_REDIRECT_URI)
 }
 
 // ─── Registro de rotas ────────────────────────────────────────────────────────
@@ -160,7 +160,7 @@ export async function authRoutes(fastify: FastifyInstance) {
 
   // ── GET /auth/google ─────────────────────────────────────────────────────
   // Inicia o fluxo OAuth: gera URL de autorização e redireciona
-  fastify.get("/auth/google", async (request, reply) => {
+  fastify.get("/auth/google", async (_request, reply) => {
     if (!google) {
       return reply.status(501).send({
         error: "OAUTH_NOT_CONFIGURED",
@@ -185,7 +185,7 @@ export async function authRoutes(fastify: FastifyInstance) {
     })
 
     const scopes = ["openid", "email", "profile"]
-    const url = await google.createAuthorizationURL(state, state, { scopes })
+    const url = await google.createAuthorizationURL(state, state,  scopes)
 
     return reply.redirect(url.toString())
   })
@@ -255,7 +255,7 @@ export async function authRoutes(fastify: FastifyInstance) {
   })
 
   // ── GET /auth/github ─────────────────────────────────────────────────────
-  fastify.get("/auth/github", async (request, reply) => {
+  fastify.get("/auth/github", async (_request, reply) => {
     if (!github) {
       return reply.status(501).send({
         error: "OAUTH_NOT_CONFIGURED",
@@ -275,9 +275,7 @@ export async function authRoutes(fastify: FastifyInstance) {
       },
     })
 
-    const url = await github.createAuthorizationURL(state, {
-      scopes: ["user:email"],
-    })
+    const url = await github.createAuthorizationURL(state,  ["user:email"])
 
     return reply.redirect(url.toString())
   })
