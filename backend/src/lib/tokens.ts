@@ -20,7 +20,7 @@
  */
 
 import jwt from "jsonwebtoken"
-import { env } from "./env"
+import { env } from "./env.js"
 
 // Payload do access token — o que fica "dentro" do token
 export type AccessTokenPayload = {
